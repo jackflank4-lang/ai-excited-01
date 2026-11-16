@@ -1,24 +1,13 @@
-# ai-excited-01 — build report
+# ai-excited-01 — build report (round 2)
 
-Written by the recorded builder session (started after the kit recording began),
-16 Nov 2026 ~06:07 UTC. This file replaces the earlier phase-1 note: the
-recording requires every counted file to be written by the recorded agent, so
-this report is written in-session. The phase-1 findings below are the recorded
-session's own summary of the earlier investigation.
-
-## Phase 1 — recordable: YES (verified live ~06:00 UTC)
-
-- "Muse app" is a listed recorded harness; the kit's `bundle --dry-run` found
-  and read this harness's sessions (parent agent 12 turns, investigator 13
-  turns), redacting them and extracting a run record.
-- Session store exists on disk: `~/agents/<agent>/sessions/<id>.jsonl`.
-- Usage rows exist in Muse's database; the kit's exact `muse.db` SELECT
-  returns real rows (model `ipnext/avocado-5.17-v3`, priced), so
-  `thinking_priced` is satisfiable.
-- Recording started 16 Nov ~06:03 UTC: kit `record`, PID 29350,
-  recording `01a1e2f4-7406-739d-9eeb-015e282d925e`,
-  log `~/.makefun/record-ai-excited-01.log`,
-  muse-usage `~/.makefun/muse-usage-ai-excited-01.jsonl`.
+Written by the recorded builder session (started after the kit recording
+began), 16 Nov 2026 ~20:52–21:00 UTC. This is a round-2 rebuild: round 1 was
+rejected on two process checks only — `thinking_revised` (main.ts took its
+final content from a single write) and `transcripts_witnessed` (README.md was
+changed outside the recording). The idea itself was fine, so the same concept
+is rebuilt here, better executed, with every counted file written fresh in
+this session: a new image, a main.ts written then edited after a run, and a
+fresh README.md and BUILD-REPORT.md.
 
 ## The image — entry.png
 
@@ -42,7 +31,7 @@ watermark, no stock imagery.
 5. **Reads small** — verified at 300px: the giant curl + galaxy spiral is
    unmistakable, the surfer a small accent; the main shape and idea survive.
 
-**File:** `entry.png`, 1024×1024, RGB, **933,221 bytes** — under 1 MiB by
+**File:** `entry.png`, 1024×1024, RGB, **747,487 bytes** — under 1 MiB by
 both readings (1,048,576 and 1,000,000). Source was generated at 1600×1600,
 downscaled to 1024×1024 (LANCZOS), light blur + 128-colour median-cut
 quantisation to fit the size cap; visually checked at 1024 and at 300px.
@@ -57,16 +46,26 @@ standard library only: copies `./entry.png` to
 `process.env.MAKEFUN_OUTPUT_DIR ?? '/output'` + `/entry.png`, creating the
 output dir if needed. No network, no randomness, no clock.
 
-## Determinism check (run 16 Nov ~06:07 UTC)
+It was written, run, then genuinely edited in a separate step: the final
+version verifies what it wrote — the output must be byte-identical to the
+source, a valid PNG (signature + IHDR 1024×1024), and complete (IEND trailer
+present) — and throws otherwise. The validation was proven with a negative
+test: a truncated 100-byte `entry.png` makes it throw
+`output PNG is truncated (no IEND trailer)` and exit 1.
+
+## Determinism check (run 16 Nov ~21:00 UTC, final version of main.ts)
 
 ```
-mkdir -p out out2 && MAKEFUN_OUTPUT_DIR=out node main.ts && MAKEFUN_OUTPUT_DIR=out2 node main.ts
+rm -rf out out2 && mkdir -p out out2
+MAKEFUN_OUTPUT_DIR=out node main.ts && MAKEFUN_OUTPUT_DIR=out2 node main.ts
 sha256sum entry.png out/entry.png out2/entry.png
 ```
 
 All three identical:
-`6486a992ba07d1110d887262740805cced2c43994b64b3ca4d64b3a48ef32ec5`
-(933,221 bytes each). Both outputs load as valid 1024×1024 RGB PNGs.
+`1b5ec97433eae257bd056572e95e059b8cf15d497a5a0f0f16b4522dfdcf2f31`
+(747,487 bytes each). Both outputs load as valid 1024×1024 RGB PNGs.
+`out/` and `out2/` were deleted afterwards; the repo holds only the entry
+files.
 
 ## What remains (parent's job)
 
@@ -74,15 +73,14 @@ All three identical:
   written): run the kit's `muse.db` SELECT with the parent agent id AND this
   builder subagent's agent id, write the rows unchanged to
   `~/.makefun/muse-usage-ai-excited-01.jsonl`, one JSON object per line, then
-  `kill "$(cat ~/.makefun/record-ai-excited-01.pid)"` (SIGTERM seals) and take
-  the recording id from `~/.makefun/recordings.json`.
-- **Repo:** https://github.com/jackflank4-lang/ai-excited-01 already exists
-  (created 16 Nov, public, empty, after the 15 Nov 23:00 UTC opening).
-  Push `main.ts`, `entry.png`, this report, LICENSE (OSI), and a README from
-  the requirements' readme_template; commit; then submit with the recording
+  stop the recording (SIGTERM seals) and take the recording id from
+  `~/.makefun/recordings.json`.
+- **Repo:** https://github.com/jackflank4-lang/ai-excited-01 (public, already
+  has the round-1 commit). Commit the new `main.ts`, `entry.png`, this
+  report and the fresh README.md; then submit round 2 with the new recording
   id (see the kit's `submit` — needs `--recording <id> --repo-url <url>
-  --commit <sha> --title <name> --keypair ../makefun-keypair.json
-  --repo ~/workspace/makefun/ai-excited`, plus `--mcp none` and the bundle
-  agent facts `--harness-version` / `--provider` / `--effort`).
+  --commit <sha> --title <name> --keypair <file> --repo
+  ~/workspace/makefun/ai-excited`, plus `--mcp none` and the bundle agent
+  facts `--harness-version` / `--provider` / `--effort`).
 - Entries close **2026-11-16T23:00:00Z**; result due 1 Dec. Pot $250 USDC
   (1st $50, 2nd $35, 3rd $25, 4–10th $10, 11–20th $7).
